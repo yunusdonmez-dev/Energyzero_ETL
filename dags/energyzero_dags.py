@@ -27,19 +27,19 @@ with DAG(
     raw_path = f"/opt/airflow/data/raw/energy_{run_tag}.json"
     parquet_path = f"/opt/airflow/data/processed/energy_{run_tag}.parquet"
 
-extract = BashOperator(
-    task_id="extract_energyzero_json",
-    bash_command=f"python /opt/airflow/scripts/extract_energyzero.py --days 7 --output {raw_path}",
-)
+    extract = BashOperator(
+        task_id="extract_energyzero_json",
+        bash_command=f"python /opt/airflow/scripts/extract_energyzero.py --days 7 --output {raw_path}",
+    )
 
-transform = BashOperator(
-    task_id="transform_json_to_parquet",
-    bash_command=f"python /opt/airflow/scripts/transform_pandas.py --input {raw_path} --output {parquet_path} --vat-rate 0.21",
-)
+    transform = BashOperator(
+        task_id="transform_json_to_parquet",
+        bash_command=f"python /opt/airflow/scripts/transform_pandas.py --input {raw_path} --output {parquet_path} --vat-rate 0.21",
+    )
 
-validate = BashOperator(
-    task_id="validate_parquet_contract",
-    bash_command=f"python /opt/airflow/scripts/validate_parquet.py --input {parquet_path}",
-)
+    validate = BashOperator(
+        task_id="validate_parquet_contract",
+        bash_command=f"python /opt/airflow/scripts/validate_parquet.py --input {parquet_path}",
+    )
 
-extract >> transform >> validate # type: ignore
+    extract >> transform >> validate # type: ignore
